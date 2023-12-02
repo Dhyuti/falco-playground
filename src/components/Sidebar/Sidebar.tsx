@@ -210,6 +210,7 @@ export const Sidebar = () => {
   };
 
   const handleShare = () => {
+    const maxCharacterLimit = 63466;
     const urlConstructor = new URLSearchParams();
     const data = encodedYaml(code.value);
     urlConstructor.append("code", data);
@@ -217,7 +218,12 @@ export const Sidebar = () => {
       window.location.pathname
     }#/?${urlConstructor.toString()}`;
     navigator.clipboard.writeText(URL);
-    message.success("Copied URL to clipboard");
+    if (URL.length > maxCharacterLimit) {
+      messageApi.error("URL is too long. Please reduce the data size.");
+    } else {
+      navigator.clipboard.writeText(URL);
+      messageApi.success("Copied URL to clipboard");
+    }
   };
   useEffect(() => {
     compileCode();
